@@ -2,6 +2,15 @@ const express = require('express');
 const { getUser } = require('./database');
 const crypto = require('crypto');
 const app = express();
+const messages = [
+  '¡Hola, mundo!',
+  '¡Bienvenido a mi API!',
+  '¡Hoy es un gran día!',
+  '¡Sigue adelante, lo estás haciendo bien!',
+  'La vida es un viaje, disfrútalo.',
+  '¡Sé el cambio que quieres ver en el mundo!'
+];
+
 
 const realm = 'User Visible Realm';
 
@@ -44,8 +53,17 @@ app.get('/protected', authMiddleware, (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  //res.setHeader('WWW-Authenticate', `Basic realm="${realm}"`);
+  res.setHeader('WWW-Authenticate', `Basic realm="${realm}"`);
   res.status(401).send('Has sido deslogueado');
+});
+
+// Crea un endpoint GET en /random-message
+app.get('/random-message', authMiddleware ,(req, res) => {
+  // Genera un índice aleatorio dentro del rango del array
+  const randomIndex = Math.floor(Math.random() * messages.length);
+
+  // Devuelve el mensaje aleatorio como respuesta
+  res.json({ message: messages[randomIndex] });
 });
 
 // Ruta sin protección para pruebas
